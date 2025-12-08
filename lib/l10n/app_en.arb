@@ -1,0 +1,19 @@
+{
+    "@@locale": "en",
+    "loginScreen_subtitle": "The friendliest cycle tracker",
+    "loginScreen_googleLoginButtonText": "Sign in with Google",
+    "loginScreen_loadingButtonText": "Signing in...",
+    "registerPage_selectYearOfBirth": "When were you born?",
+    "registerPage_selectYearOfBirthDescription": "Since cycles can change over time, this helps us tailor the app to your individual needs!",
+    "registerPage_continueButtonText": "Continue",
+    "registerPage_backButtonText": "Back",
+    "registerPage_selectLastPeriodTitle": "When was the first day of your last period?",
+    "registerPage_selectLastPeriodDescription": "This helps us determine your next period",
+    "registerPage_overviewTitle": "Final step",
+    "registerPage_overviewSubtitle": "Review the information you provided to make sure it's correct!",
+    "registerPage_yearOfBirth": "Year of birth",
+    "registerPage_lastPeriodStart": "Last period start",
+    "registerPage_acceptTerms": "I accept the terms",
+    "registerPage_acceptTermsDescription": "By using the app, I accept the terms of use and privacy policy",
+    "registerPage_finishButtonText": "Finish"
+}

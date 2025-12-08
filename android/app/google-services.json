@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "779909713072",
+    "project_id": "moonly-dev-ee98d",
+    "storage_bucket": "moonly-dev-ee98d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:779909713072:android:01534a97d27d1b41eebf75",
+        "android_client_info": {
+          "package_name": "com.klehvai.moonlyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNTjOp-4HtacZLrEH3x90mrIvj2bHdWB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

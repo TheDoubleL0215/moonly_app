@@ -1,0 +1,19 @@
+{
+    "@@locale": "hu",
+    "loginScreen_subtitle": "A legbarátságosabb cikluskövető",
+    "loginScreen_googleLoginButtonText": "Bejelentkezés Google-lal",
+    "loginScreen_loadingButtonText": "Bejelentkezés...",
+    "registerPage_selectYearOfBirth": "Mikor születtél?",
+    "registerPage_selectYearOfBirthDescription": "A ciklusok idővel változhatnak, ha tudjuk hány éves vagy az segít nekünk abban, hogy az alkalmazást személyre szabjuk neked!",
+    "registerPage_continueButtonText": "Tovább",
+    "registerPage_backButtonText": "Vissza",
+    "registerPage_selectLastPeriodTitle": "Mikor volt az előző menstruációd első napja?",
+    "registerPage_selectLastPeriodDescription": "Így meg tudjuk határozni a következő menstruációdat",
+    "registerPage_overviewTitle": "Utolsó lépés",
+    "registerPage_overviewSubtitle": "Tekintsd át a megadott adatokat hogy biztosan helyesek-e!",
+    "registerPage_yearOfBirth": "Születési év",
+    "registerPage_lastPeriodStart": "Utolsó menstruáció kezdete",
+    "registerPage_acceptTerms": "Elfogadom a feltételeket",
+    "registerPage_acceptTermsDescription": "Az alkalmazás használatával elfogadom a felhasználási feltételeket és az adatvédelmi irányelveket",
+    "registerPage_finishButtonText": "Befejezés"
+}
