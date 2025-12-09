@@ -60,4 +60,41 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get registerPage_finishButtonText => 'Befejezés';
+
+  @override
+  String get appbar_mainpageText => 'Főoldal';
+
+  @override
+  String get appbar_calendarText => 'Naptár';
+
+  @override
+  String get appbar_knowledgeText => 'Tudástár';
+
+  @override
+  String get appbar_profile => 'Profil';
+
+  @override
+  String cycleDiagramCurrentDayCounter(Object day) {
+    return '$day. nap';
+  }
+
+  @override
+  String cycleDiagramNextDayCounter(Object day) {
+    return '$day. nap múlva';
+  }
+
+  @override
+  String get cycleDiagramPeriodCurrent => 'menstruáció';
+
+  @override
+  String get cycleDiagramOvulationCurrent => 'ovuláció';
+
+  @override
+  String get cycleDiagramPmsCurrent => 'pms időszak';
+
+  @override
+  String get cycleDiagramFertileWindowCurrent => 'termékeny időszak';
+
+  @override
+  String get cycleDiagramFollicularPhaseCurrent => 'follikuláris fázis';
 }

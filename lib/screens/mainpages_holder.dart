@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:moonly/l10n/app_localizations.dart';
+import 'package:moonly/screens/calendar_screen.dart';
 import 'package:moonly/screens/overview_screen.dart';
 import 'package:moonly/screens/profile_screen.dart';
 
@@ -15,6 +17,7 @@ class _MainPagesHolderState extends State<MainPagesHolder> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       body: _getCurrentPage(),
       bottomNavigationBar: Theme(
@@ -30,22 +33,22 @@ class _MainPagesHolderState extends State<MainPagesHolder> {
               _currentIndex = index;
             });
           },
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(LucideIcons.houseHeart),
-              label: 'Főoldal',
+              label: loc!.appbar_mainpageText,
             ),
             BottomNavigationBarItem(
               icon: Icon(LucideIcons.calendar),
-              label: 'Naptár',
+              label: loc.appbar_calendarText,
             ),
             BottomNavigationBarItem(
               icon: Icon(LucideIcons.bookMarked),
-              label: 'Tudástár',
+              label: loc.appbar_knowledgeText,
             ),
             BottomNavigationBarItem(
               icon: Icon(LucideIcons.user),
-              label: 'Profil',
+              label: loc.appbar_profile,
             ),
           ],
         ),
@@ -58,7 +61,7 @@ class _MainPagesHolderState extends State<MainPagesHolder> {
       case 0:
         return const OverviewScreen();
       case 1:
-        return const Center(child: Text('Naptár'));
+        return const CalendarScreen();
       case 2:
         return const Center(child: Text('Tudástár'));
       case 3:

@@ -193,6 +193,72 @@ abstract class AppLocalizations {
   /// In hu, this message translates to:
   /// **'Befejezés'**
   String get registerPage_finishButtonText;
+
+  /// No description provided for @appbar_mainpageText.
+  ///
+  /// In hu, this message translates to:
+  /// **'Főoldal'**
+  String get appbar_mainpageText;
+
+  /// No description provided for @appbar_calendarText.
+  ///
+  /// In hu, this message translates to:
+  /// **'Naptár'**
+  String get appbar_calendarText;
+
+  /// No description provided for @appbar_knowledgeText.
+  ///
+  /// In hu, this message translates to:
+  /// **'Tudástár'**
+  String get appbar_knowledgeText;
+
+  /// No description provided for @appbar_profile.
+  ///
+  /// In hu, this message translates to:
+  /// **'Profil'**
+  String get appbar_profile;
+
+  /// No description provided for @cycleDiagramCurrentDayCounter.
+  ///
+  /// In hu, this message translates to:
+  /// **'{day}. nap'**
+  String cycleDiagramCurrentDayCounter(Object day);
+
+  /// No description provided for @cycleDiagramNextDayCounter.
+  ///
+  /// In hu, this message translates to:
+  /// **'{day}. nap múlva'**
+  String cycleDiagramNextDayCounter(Object day);
+
+  /// No description provided for @cycleDiagramPeriodCurrent.
+  ///
+  /// In hu, this message translates to:
+  /// **'menstruáció'**
+  String get cycleDiagramPeriodCurrent;
+
+  /// No description provided for @cycleDiagramOvulationCurrent.
+  ///
+  /// In hu, this message translates to:
+  /// **'ovuláció'**
+  String get cycleDiagramOvulationCurrent;
+
+  /// No description provided for @cycleDiagramPmsCurrent.
+  ///
+  /// In hu, this message translates to:
+  /// **'pms időszak'**
+  String get cycleDiagramPmsCurrent;
+
+  /// No description provided for @cycleDiagramFertileWindowCurrent.
+  ///
+  /// In hu, this message translates to:
+  /// **'termékeny időszak'**
+  String get cycleDiagramFertileWindowCurrent;
+
+  /// No description provided for @cycleDiagramFollicularPhaseCurrent.
+  ///
+  /// In hu, this message translates to:
+  /// **'follikuláris fázis'**
+  String get cycleDiagramFollicularPhaseCurrent;
 }
 
 class _AppLocalizationsDelegate

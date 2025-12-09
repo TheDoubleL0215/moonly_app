@@ -15,5 +15,16 @@
     "registerPage_lastPeriodStart": "Last period start",
     "registerPage_acceptTerms": "I accept the terms",
     "registerPage_acceptTermsDescription": "By using the app, I accept the terms of use and privacy policy",
-    "registerPage_finishButtonText": "Finish"
+    "registerPage_finishButtonText": "Finish",
+    "appbar_mainpageText": "Mainpage",
+    "appbar_calendarText": "Calendar",
+    "appbar_knowledgeText": "Knowledge",
+    "appbar_profile": "Profile",
+    "cycleDiagramCurrentDayCounter": "Day {day}",
+    "cycleDiagramNextDayCounter": "After {day} days",
+    "cycleDiagramPeriodCurrent": "period",
+    "cycleDiagramOvulationCurrent": "ovulation",
+    "cycleDiagramPmsCurrent": "pms period",
+    "cycleDiagramFertileWindowCurrent": "fertile window",
+    "cycleDiagramFollicularPhaseCurrent": "follicular phase"
 }

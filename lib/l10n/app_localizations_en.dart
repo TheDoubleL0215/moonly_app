@@ -60,4 +60,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registerPage_finishButtonText => 'Finish';
+
+  @override
+  String get appbar_mainpageText => 'Mainpage';
+
+  @override
+  String get appbar_calendarText => 'Calendar';
+
+  @override
+  String get appbar_knowledgeText => 'Knowledge';
+
+  @override
+  String get appbar_profile => 'Profile';
+
+  @override
+  String cycleDiagramCurrentDayCounter(Object day) {
+    return 'Day $day';
+  }
+
+  @override
+  String cycleDiagramNextDayCounter(Object day) {
+    return 'After $day days';
+  }
+
+  @override
+  String get cycleDiagramPeriodCurrent => 'period';
+
+  @override
+  String get cycleDiagramOvulationCurrent => 'ovulation';
+
+  @override
+  String get cycleDiagramPmsCurrent => 'pms period';
+
+  @override
+  String get cycleDiagramFertileWindowCurrent => 'fertile window';
+
+  @override
+  String get cycleDiagramFollicularPhaseCurrent => 'follicular phase';
 }

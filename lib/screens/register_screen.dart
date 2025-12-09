@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moonly/l10n/app_localizations.dart';
-import 'package:moonly/main.dart';
 import 'package:moonly/screens/mainpages_holder.dart';
 import 'package:moonly/screens/registerpage_steps/StepDate.dart';
 import 'package:moonly/screens/registerpage_steps/StepLegal.dart';
@@ -53,13 +51,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> finish() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
+    // Save user data
     await FirebaseFirestore.instance.collection('users').doc(uid).set({
       'yearOfBirth': dateOfBirth?.year,
-      'lastPeriodStart': lastPeriodStart,
+      'periodStart': lastPeriodStart,
       'acceptedLegal': acceptedLegal,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
+
+    // Create a new cycle in the cycles subcollection
+    if (lastPeriodStart != null) {
+      final cyclesRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('cycles');
+
+      await cyclesRef.add({
+        'startDay': Timestamp.fromDate(lastPeriodStart!),
+        'cycleLength': 28,
+        'periodLength': 3,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    }
 
     if (mounted) {
       Navigator.pushReplacement(

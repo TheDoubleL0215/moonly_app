@@ -15,5 +15,16 @@
     "registerPage_lastPeriodStart": "Utolsó menstruáció kezdete",
     "registerPage_acceptTerms": "Elfogadom a feltételeket",
     "registerPage_acceptTermsDescription": "Az alkalmazás használatával elfogadom a felhasználási feltételeket és az adatvédelmi irányelveket",
-    "registerPage_finishButtonText": "Befejezés"
+    "registerPage_finishButtonText": "Befejezés",
+    "appbar_mainpageText": "Főoldal",
+    "appbar_calendarText": "Naptár",
+    "appbar_knowledgeText": "Tudástár",
+    "appbar_profile": "Profil",
+    "cycleDiagramCurrentDayCounter": "{day}. nap",
+    "cycleDiagramNextDayCounter": "{day}. nap múlva",
+    "cycleDiagramPeriodCurrent": "menstruáció",
+    "cycleDiagramOvulationCurrent": "ovuláció",
+    "cycleDiagramPmsCurrent": "pms időszak",
+    "cycleDiagramFertileWindowCurrent": "termékeny időszak",
+    "cycleDiagramFollicularPhaseCurrent": "follikuláris fázis"
 }
