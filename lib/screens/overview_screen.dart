@@ -21,36 +21,42 @@ class OverviewScreen extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      body: StreamBuilder<DocumentSnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
+            .collection('cycles')
+            .orderBy('startDay', descending: true)
+            .limit(1)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text('Nincs elérhető adat'));
+          if (!snapshot.hasData ||
+              snapshot.data!.docs.isEmpty ||
+              snapshot.data!.docs.first.data() == null) {
+            return const Center(child: Text('Nincs elérhető ciklus adat'));
           }
 
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
-          final periodStart = userData['periodStart'] as Timestamp?;
+          final cycleData =
+              snapshot.data!.docs.first.data() as Map<String, dynamic>;
+          final startDayTimestamp = cycleData['startDay'] as Timestamp?;
 
-          if (periodStart == null) {
-            return const Center(
-              child: Text('Nincs beállítva utolsó menstruáció kezdete'),
-            );
+          if (startDayTimestamp == null) {
+            return const Center(child: Text('Nincs beállítva ciklus kezdete'));
           }
 
-          final periodStartDate = periodStart.toDate();
+          final startDay = startDayTimestamp.toDate();
+          final periodLength = (cycleData['periodLength'] as int?) ?? 4;
+          final cycleLength = (cycleData['cycleLength'] as int?) ?? 28;
           final cycleInfo = CycleInfo(
-            periodStart: periodStartDate,
+            periodStart: startDay,
             periodLength:
-                5, // Default value, can be fetched from Firestore if needed
+                periodLength, // Default value, can be fetched from Firestore if needed
             cycleLength:
-                28, // Default value, can be fetched from Firestore if needed
+                cycleLength, // Default value, can be fetched from Firestore if needed
           );
 
           return Scaffold(

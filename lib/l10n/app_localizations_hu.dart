@@ -97,4 +97,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get cycleDiagramFollicularPhaseCurrent => 'follikuláris fázis';
+
+  @override
+  String get calendar_bleedingText => 'vérzés';
 }

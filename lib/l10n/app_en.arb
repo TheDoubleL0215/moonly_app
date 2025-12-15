@@ -26,5 +26,6 @@
     "cycleDiagramOvulationCurrent": "ovulation",
     "cycleDiagramPmsCurrent": "pms period",
     "cycleDiagramFertileWindowCurrent": "fertile window",
-    "cycleDiagramFollicularPhaseCurrent": "follicular phase"
+    "cycleDiagramFollicularPhaseCurrent": "follicular phase",
+    "calendar_bleedingText": "bleeding"
 }

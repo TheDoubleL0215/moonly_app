@@ -26,5 +26,6 @@
     "cycleDiagramOvulationCurrent": "ovuláció",
     "cycleDiagramPmsCurrent": "pms időszak",
     "cycleDiagramFertileWindowCurrent": "termékeny időszak",
-    "cycleDiagramFollicularPhaseCurrent": "follikuláris fázis"
+    "cycleDiagramFollicularPhaseCurrent": "follikuláris fázis",
+    "calendar_bleedingText": "vérzés"
 }

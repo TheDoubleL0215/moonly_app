@@ -97,4 +97,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cycleDiagramFollicularPhaseCurrent => 'follicular phase';
+
+  @override
+  String get calendar_bleedingText => 'bleeding';
 }

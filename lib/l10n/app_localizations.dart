@@ -259,6 +259,12 @@ abstract class AppLocalizations {
   /// In hu, this message translates to:
   /// **'follikuláris fázis'**
   String get cycleDiagramFollicularPhaseCurrent;
+
+  /// No description provided for @calendar_bleedingText.
+  ///
+  /// In hu, this message translates to:
+  /// **'vérzés'**
+  String get calendar_bleedingText;
 }
 
 class _AppLocalizationsDelegate

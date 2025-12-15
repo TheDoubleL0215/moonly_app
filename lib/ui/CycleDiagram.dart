@@ -308,7 +308,7 @@ class _CycleDiagramState extends State<CycleDiagram> {
   }
 
   Widget _buildOvulationMarker() {
-    final percent = cycle.ovulationDay / cycle.cycleLength;
+    final percent = (cycle.ovulationDay - 1) / cycle.cycleLength;
 
     final radius = 140.0;
     final angle = (percent * 360 - 90) * pi / 180;

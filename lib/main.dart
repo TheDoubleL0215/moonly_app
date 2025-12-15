@@ -21,12 +21,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Locale? _locale = Locale('en'); // null -> system locale
-
-    void setLocale(Locale locale) => _locale = locale;
+    Locale? localization = Locale('hu'); // null -> system locale
 
     return MaterialApp(
-      locale: _locale,
+      locale: localization,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
