@@ -52,6 +52,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPage_lastPeriodStart => 'Last period start';
 
   @override
+  String get registerPage_selectCycleLengthTitle => 'How long is your cycle?';
+
+  @override
+  String get registerPage_selectCycleLengthDescription =>
+      'Cycle length is from the first day of your period to the day before your next period';
+
+  @override
+  String get registerPage_cycleLengthInputLabel => 'Cycle length';
+
+  @override
+  String get registerPage_cycleLengthInputHint => 'e.g. 28';
+
+  @override
+  String get registerPage_cycleLengthDays => 'days';
+
+  @override
+  String get registerPage_cycleLengthUnknown => 'I don\'t know';
+
+  @override
+  String get registerPage_cycleLength => 'Cycle length';
+
+  @override
+  String get registerPage_periodLength => 'Period length';
+
+  @override
   String get registerPage_acceptTerms => 'I accept the terms';
 
   @override

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moonly/screens/mainpages_holder.dart';
+import 'package:moonly/screens/registerpage_steps/StepCycleLength.dart';
 import 'package:moonly/screens/registerpage_steps/StepDate.dart';
 import 'package:moonly/screens/registerpage_steps/StepLegal.dart';
 import 'package:moonly/screens/registerpage_steps/SteplastPeriod.dart';
@@ -19,8 +20,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   DateTime? dateOfBirth;
   DateTime? lastPeriodStart;
-  bool acceptedLegal = false;
+  int? cycleLength;
 
+  bool acceptedLegal = false;
   @override
   void initState() {
     super.initState();
@@ -28,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void nextStep() {
-    if (_currentStep < 2) {
+    if (_currentStep < 3) {
       setState(() => _currentStep++);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 350),
@@ -53,23 +55,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Save user data
     await FirebaseFirestore.instance.collection('users').doc(uid).set({
       'yearOfBirth': dateOfBirth?.year,
-      'periodStart': lastPeriodStart,
       'acceptedLegal': acceptedLegal,
+      'averageCycleLength': cycleLength,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    // Create a new cycle in the cycles subcollection
+    // Create a bleeding document with date-based ID
     if (lastPeriodStart != null) {
-      final cyclesRef = FirebaseFirestore.instance
+      final lastPeriodNormalized = DateTime(
+        lastPeriodStart!.year,
+        lastPeriodStart!.month,
+        lastPeriodStart!.day,
+      );
+      final bleedingDocId =
+          '${lastPeriodNormalized.year}-${lastPeriodNormalized.month.toString().padLeft(2, '0')}-${lastPeriodNormalized.day.toString().padLeft(2, '0')}';
+
+      final bleedingsRef = FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
-          .collection('cycles');
+          .collection('bleedings');
 
-      await cyclesRef.add({
-        'startDay': Timestamp.fromDate(lastPeriodStart!),
-        'cycleLength': 28,
-        'periodLength': 3,
+      await bleedingsRef.doc(bleedingDocId).set({
+        'date': Timestamp.fromDate(lastPeriodNormalized),
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -106,7 +114,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             },
             onBack: prevStep,
           ),
+          StepCycleLength(
+            initialValue: cycleLength,
+            onNext: (val) {
+              cycleLength = val;
+              nextStep();
+            },
+            onBack: prevStep,
+          ),
           StepLegalAgreement(
+            cycleLength: cycleLength,
             initialValue: acceptedLegal,
             dateOfBirth: dateOfBirth,
             lastPeriodStart: lastPeriodStart,

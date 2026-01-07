@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 class StepLastPeriod extends StatefulWidget {
   final DateTime? initialValue;
   final void Function(DateTime value) onNext;
+  final int? initialPeriodLength;
   final VoidCallback onBack;
 
   const StepLastPeriod({
@@ -13,6 +14,7 @@ class StepLastPeriod extends StatefulWidget {
     this.initialValue,
     required this.onNext,
     required this.onBack,
+    this.initialPeriodLength,
   });
 
   @override
@@ -24,7 +26,7 @@ class _StepLastPeriodState extends State<StepLastPeriod> {
   late DateTime focusedDay;
   late DateTime firstDay;
   late DateTime lastDay;
-
+  int? _periodLength;
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,10 @@ class _StepLastPeriodState extends State<StepLastPeriod> {
 
     firstDay = DateTime(now.year - 2, now.month, now.day);
     lastDay = DateTime(now.year, now.month, now.day);
+
+    if (widget.initialPeriodLength != null) {
+      _periodLength = widget.initialPeriodLength!;
+    }
   }
 
   bool isSameDaySafe(DateTime? a, DateTime? b) {
@@ -47,7 +53,6 @@ class _StepLastPeriodState extends State<StepLastPeriod> {
 
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.all(24),
@@ -81,64 +86,75 @@ class _StepLastPeriodState extends State<StepLastPeriod> {
             ),
           ),
 
-          // Calendar area
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: TableCalendar(
-              locale: localizations.localeName,
-              firstDay: firstDay,
-              lastDay: lastDay,
-              focusedDay: focusedDay,
-              calendarFormat: CalendarFormat.month,
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              selectedDayPredicate: (day) => isSameDaySafe(selectedDate, day),
-              onDaySelected: (day, focus) {
-                setState(() {
-                  selectedDate = day;
-                  focusedDay = focus;
-                });
-              },
-              onPageChanged: (focus) {
-                focusedDay = focus;
-              },
-              calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.2),
-                  shape: BoxShape.circle,
-                ),
-                // Make weekends appear the same as other weekdays (default style)
-                selectedDecoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-                selectedTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                weekendTextStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                outsideDaysVisible: false,
+          // Calendar area - Flexible to prevent overflow
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: TableCalendar(
+                      locale: localizations.localeName,
+                      firstDay: firstDay,
+                      lastDay: lastDay,
+                      focusedDay: focusedDay,
+                      calendarFormat: CalendarFormat.month,
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      selectedDayPredicate: (day) =>
+                          isSameDaySafe(selectedDate, day),
+                      onDaySelected: (day, focus) {
+                        setState(() {
+                          selectedDate = day;
+                          focusedDay = focus;
+                        });
+                      },
+                      onPageChanged: (focus) {
+                        setState(() {
+                          focusedDay = focus;
+                        });
+                      },
+                      calendarStyle: CalendarStyle(
+                        todayDecoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        // Make weekends appear the same as other weekdays (default style)
+                        selectedDecoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        selectedTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        weekendTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        outsideDaysVisible: false,
+                      ),
+                      headerStyle: const HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                      ),
+                      enabledDayPredicate: (day) {
+                        final today = DateTime.now();
+                        final d = DateTime(day.year, day.month, day.day);
+                        final t = DateTime(today.year, today.month, today.day);
+                        return !d.isAfter(t); // disable future days
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Period length selector
+                ],
               ),
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-              ),
-              enabledDayPredicate: (day) {
-                final today = DateTime.now();
-                final d = DateTime(day.year, day.month, day.day);
-                final t = DateTime(today.year, today.month, today.day);
-                return !d.isAfter(t); // disable future days
-              },
             ),
           ),
 
-          const Spacer(),
-
           // Bottom buttons (same style as first page)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
             child: Column(
               children: [
                 SizedBox(

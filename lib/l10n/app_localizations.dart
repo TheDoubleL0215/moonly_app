@@ -176,6 +176,54 @@ abstract class AppLocalizations {
   /// **'Utolsó menstruáció kezdete'**
   String get registerPage_lastPeriodStart;
 
+  /// No description provided for @registerPage_selectCycleLengthTitle.
+  ///
+  /// In hu, this message translates to:
+  /// **'Hány napos a ciklusod?'**
+  String get registerPage_selectCycleLengthTitle;
+
+  /// No description provided for @registerPage_selectCycleLengthDescription.
+  ///
+  /// In hu, this message translates to:
+  /// **'A ciklus hossza a menstruáció első napjától a következő menstruáció előtti napig tart'**
+  String get registerPage_selectCycleLengthDescription;
+
+  /// No description provided for @registerPage_cycleLengthInputLabel.
+  ///
+  /// In hu, this message translates to:
+  /// **'Ciklus hossza'**
+  String get registerPage_cycleLengthInputLabel;
+
+  /// No description provided for @registerPage_cycleLengthInputHint.
+  ///
+  /// In hu, this message translates to:
+  /// **'pl. 28'**
+  String get registerPage_cycleLengthInputHint;
+
+  /// No description provided for @registerPage_cycleLengthDays.
+  ///
+  /// In hu, this message translates to:
+  /// **'nap'**
+  String get registerPage_cycleLengthDays;
+
+  /// No description provided for @registerPage_cycleLengthUnknown.
+  ///
+  /// In hu, this message translates to:
+  /// **'Nem tudom'**
+  String get registerPage_cycleLengthUnknown;
+
+  /// No description provided for @registerPage_cycleLength.
+  ///
+  /// In hu, this message translates to:
+  /// **'Ciklus hossza'**
+  String get registerPage_cycleLength;
+
+  /// No description provided for @registerPage_periodLength.
+  ///
+  /// In hu, this message translates to:
+  /// **'Menstruáció hossza'**
+  String get registerPage_periodLength;
+
   /// No description provided for @registerPage_acceptTerms.
   ///
   /// In hu, this message translates to:

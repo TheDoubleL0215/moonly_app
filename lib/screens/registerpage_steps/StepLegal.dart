@@ -7,6 +7,7 @@ class StepLegalAgreement extends StatefulWidget {
   final bool initialValue;
   final DateTime? dateOfBirth;
   final DateTime? lastPeriodStart;
+  final int? cycleLength;
   final void Function(bool value) onFinish;
   final VoidCallback onBack;
 
@@ -15,6 +16,7 @@ class StepLegalAgreement extends StatefulWidget {
     required this.initialValue,
     this.dateOfBirth,
     this.lastPeriodStart,
+    this.cycleLength,
     required this.onFinish,
     required this.onBack,
   });
@@ -89,8 +91,7 @@ class _StepLegalAgreementState extends State<StepLegalAgreement> {
                         subtitle: Text(widget.dateOfBirth!.year.toString()),
                       ),
                     ),
-                  if (widget.lastPeriodStart != null) ...[
-                    const SizedBox(height: 8),
+                  if (widget.lastPeriodStart != null)
                     Card(
                       child: ListTile(
                         leading: Icon(LucideIcons.droplets),
@@ -105,24 +106,38 @@ class _StepLegalAgreementState extends State<StepLegalAgreement> {
                         ),
                       ),
                     ),
-                  ],
-                  const SizedBox(height: 24),
                   Card(
-                    child: CheckboxListTile(
+                    child: ListTile(
+                      leading: Icon(LucideIcons.calendarDays),
                       title: Text(
-                        localizations.registerPage_acceptTerms,
+                        localizations.registerPage_cycleLength,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        localizations.registerPage_acceptTermsDescription,
+                        '${widget.cycleLength!} ${localizations.registerPage_cycleLengthDays}',
                       ),
-                      value: accepted,
-                      onChanged: (value) {
-                        setState(() {
-                          accepted = value ?? false;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Card(
+                      child: CheckboxListTile(
+                        title: Text(
+                          localizations.registerPage_acceptTerms,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          localizations.registerPage_acceptTermsDescription,
+                        ),
+                        value: accepted,
+                        onChanged: (value) {
+                          setState(() {
+                            accepted = value ?? false;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                      ),
                     ),
                   ),
                 ],

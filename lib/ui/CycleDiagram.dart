@@ -2,58 +2,83 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moonly/l10n/app_localizations.dart';
-import 'package:moonly/utils/cycle_utils.dart';
+import 'package:moonly/utils/cycle_phase_helper.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CycleInfo {
   final DateTime periodStart;
   final int periodLength;
   final int cycleLength;
-  final DateTime? ovulationStartDay;
-  final DateTime? pmsStartDay;
 
   CycleInfo({
     required this.periodStart,
     required this.periodLength,
     required this.cycleLength,
-    this.ovulationStartDay,
-    this.pmsStartDay,
   });
 
   int get daysSinceStart => DateTime.now().difference(periodStart).inDays;
 
-  int get dayInCycle => ((daysSinceStart % cycleLength) + 1);
-
-  int get ovulationDay {
-    if (ovulationStartDay != null) {
-      final daysDiff = ovulationStartDay!.difference(periodStart).inDays;
-      return (daysDiff % cycleLength) + 1; // Convert to 1-based
+  int get dayInCycle {
+    final daysSince = daysSinceStart;
+    if (daysSince < 0) {
+      // If we're before the period start, calculate from previous cycle
+      return ((daysSince % cycleLength) + cycleLength) + 1;
     }
-    return cycleLength -
-        14 +
-        1; // Convert to 1-based (0-based would be cycleLength - 14)
+    return (daysSince % cycleLength) + 1;
   }
 
-  // Fertility window: 2 days before and 2 days after ovulation (5 days total, excluding ovulation day)
-  int get fertileStart => ovulationDay - 2;
-  int get fertileEnd => ovulationDay + 2;
+  int get ovulationDay {
+    // Ovulation typically occurs around cycleLength - 14 days
+    return cycleLength - 14 + 1;
+  }
+
+  int get fertileStart {
+    // Fertile window: ovulation - 5 days
+    return ovulationDay - 5;
+  }
+
+  int get fertileEnd {
+    // Fertile window: ovulation + 2 days
+    return ovulationDay + 2;
+  }
 
   int get pmsStartDayCalculated {
-    if (pmsStartDay != null) {
-      final daysDiff = pmsStartDay!.difference(periodStart).inDays;
-      return (daysDiff % cycleLength) + 1; // Convert to 1-based
-    }
-    return cycleLength -
-        3 +
-        1; // Convert to 1-based (0-based would be cycleLength - 3)
+    // PMS is 3 days before the next period (last 3 days of cycle)
+    return cycleLength - 2;
+  }
+
+  int get pmsEndDayCalculated {
+    return cycleLength;
+  }
+
+  int get menstruationStart {
+    // Menstruation always starts at day 1 (periodStart)
+    return 1;
+  }
+
+  int get menstruationEnd {
+    // Return periodLength which includes predicted days
+    return periodLength;
   }
 }
 
 class CycleDiagram extends StatefulWidget {
-  final CycleInfo cycle;
+  final List<DateTime> bleedingDays;
+  final DateTime? currentPeriodStart;
   final ValueChanged<int>? onDayChanged;
+  final int averageCycleLength;
+  final int? periodLength;
+  final CyclePhaseHelper? phaseHelper;
 
-  const CycleDiagram({super.key, required this.cycle, this.onDayChanged});
+  const CycleDiagram({
+    super.key,
+    required this.bleedingDays,
+    this.currentPeriodStart,
+    this.onDayChanged,
+    required this.averageCycleLength,
+    this.periodLength,
+    this.phaseHelper,
+  });
 
   @override
   State<CycleDiagram> createState() => _CycleDiagramState();
@@ -61,8 +86,136 @@ class CycleDiagram extends StatefulWidget {
 
 class _CycleDiagramState extends State<CycleDiagram> {
   int? _draggedDay;
+  late final CycleInfo _cycle;
+  CyclePhaseHelper? _phaseHelper;
 
-  CycleInfo get cycle => widget.cycle;
+  @override
+  void initState() {
+    super.initState();
+    _phaseHelper =
+        widget.phaseHelper ??
+        CyclePhaseHelper(bleedingDays: widget.bleedingDays);
+    _updateCycleInfo();
+  }
+
+  @override
+  void didUpdateWidget(CycleDiagram oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.bleedingDays != widget.bleedingDays ||
+        oldWidget.currentPeriodStart != widget.currentPeriodStart ||
+        oldWidget.averageCycleLength != widget.averageCycleLength ||
+        oldWidget.periodLength != widget.periodLength ||
+        oldWidget.phaseHelper != widget.phaseHelper) {
+      _phaseHelper =
+          widget.phaseHelper ??
+          CyclePhaseHelper(bleedingDays: widget.bleedingDays);
+      _updateCycleInfo();
+    }
+  }
+
+  void _updateCycleInfo() {
+    // Use currentPeriodStart if provided, otherwise calculate from bleeding days
+    DateTime periodStart;
+    final sortedBleedingDays = widget.bleedingDays.toList()..sort();
+
+    if (widget.currentPeriodStart != null) {
+      periodStart = DateTime(
+        widget.currentPeriodStart!.year,
+        widget.currentPeriodStart!.month,
+        widget.currentPeriodStart!.day,
+      );
+    } else {
+      // Fallback: Find the latest bleeding day as period start
+      periodStart = sortedBleedingDays.isNotEmpty
+          ? sortedBleedingDays.last
+          : DateTime.now();
+    }
+
+    // Use periodLength from widget if provided, otherwise calculate from bleeding days
+    int periodLength;
+    if (widget.periodLength != null) {
+      periodLength = widget.periodLength!;
+    } else {
+      // Calculate period length from bleeding days
+      periodLength = 0;
+      if (sortedBleedingDays.isNotEmpty) {
+        // Find the last period range
+        DateTime? lastPeriodStart;
+        for (int i = 0; i < sortedBleedingDays.length; i++) {
+          if (i == 0 ||
+              sortedBleedingDays[i]
+                      .difference(sortedBleedingDays[i - 1])
+                      .inDays >
+                  2) {
+            lastPeriodStart = sortedBleedingDays[i];
+          }
+        }
+        if (lastPeriodStart != null) {
+          // Count consecutive bleeding days from the last period start
+          for (final day in sortedBleedingDays) {
+            if (!day.isBefore(lastPeriodStart) &&
+                day.difference(lastPeriodStart).inDays <= 10) {
+              periodLength = max(
+                periodLength,
+                day.difference(lastPeriodStart).inDays + 1,
+              );
+            }
+          }
+        }
+      }
+      periodLength = periodLength > 0 ? periodLength : 5; // Default to 5 days
+    }
+
+    // Use averageCycleLength from Firebase (passed as widget parameter)
+    int baseCycleLength = widget.averageCycleLength;
+
+    // Calculate predicted next period start
+    final predictedNextPeriodStart = periodStart.add(
+      Duration(days: baseCycleLength),
+    );
+
+    // The cycle length should only last until the day before the next predicted period
+    // So the cycle ends on day baseCycleLength (the day before next period starts)
+    int cycleLength = baseCycleLength;
+
+    // Calculate today's day in cycle
+    final today = DateTime.now();
+    final todayDayInCycle = today.difference(periodStart).inDays + 1;
+
+    // If today is before the predicted next period start, we can show up to today
+    // But the cycle length should not exceed the day before next period
+    if (today.isBefore(predictedNextPeriodStart) &&
+        todayDayInCycle > cycleLength) {
+      // Today is within the current cycle, extend to show today
+      cycleLength = todayDayInCycle;
+    }
+    // If today is on or after the predicted next period start, keep cycle length at baseCycleLength
+    // (the day before next period)
+
+    // Calculate actual menstruation end including predicted days
+    // Check each day from periodStart to find the last menstruation day
+    int actualMenstruationEnd = periodLength;
+    final helper = _phaseHelper;
+    if (helper != null) {
+      for (int day = periodLength; day <= cycleLength; day++) {
+        final date = periodStart.add(Duration(days: day - 1));
+        if (helper.getPhase(date) == CyclePhase.menstruation) {
+          actualMenstruationEnd = day;
+        } else if (actualMenstruationEnd > periodLength) {
+          // If we found menstruation days beyond periodLength, stop at first non-menstruation day
+          break;
+        }
+      }
+    }
+
+    _cycle = CycleInfo(
+      periodStart: periodStart,
+      periodLength: actualMenstruationEnd,
+      cycleLength: cycleLength,
+    );
+  }
+
+  CycleInfo get cycle => _cycle;
 
   int get currentDay => _draggedDay ?? cycle.dayInCycle;
 
@@ -73,17 +226,19 @@ class _CycleDiagramState extends State<CycleDiagram> {
     return cycle.periodStart.add(Duration(days: daysToAdd));
   }
 
-  CyclePhase? _getCurrentPhase() {
-    // Convert 1-based currentDay to DateTime
-    final currentDate = _getDateTimeForDay(currentDay);
-    return getCyclePhase(
-      currentDate,
-      cycle.periodStart,
-      cycle.periodLength,
-      cycle.cycleLength,
-      ovulationStartDay: cycle.ovulationStartDay,
-      pmsStartDay: cycle.pmsStartDay,
-    );
+  CyclePhase _getCurrentPhase() {
+    // Calculate phase based on day in cycle
+    if (currentDay >= cycle.menstruationStart &&
+        currentDay <= cycle.menstruationEnd) {
+      return CyclePhase.menstruation;
+    }
+    if (currentDay == cycle.ovulationDay) {
+      return CyclePhase.ovulation;
+    }
+    if (currentDay >= cycle.fertileStart && currentDay <= cycle.fertileEnd) {
+      return CyclePhase.fertile;
+    }
+    return CyclePhase.none;
   }
 
   String _getCurrentPhaseText(BuildContext context) {
@@ -94,12 +249,11 @@ class _CycleDiagramState extends State<CycleDiagram> {
       case CyclePhase.menstruation:
         return localizations.cycleDiagramPeriodCurrent;
       case CyclePhase.ovulation:
-      case CyclePhase.fertility:
+      case CyclePhase.fertile:
         return localizations.cycleDiagramFertileWindowCurrent;
       case CyclePhase.pms:
         return localizations.cycleDiagramPmsCurrent;
-      case CyclePhase.normal:
-      case null:
+      case CyclePhase.none:
         return localizations.cycleDiagramFollicularPhaseCurrent;
     }
   }
@@ -112,12 +266,11 @@ class _CycleDiagramState extends State<CycleDiagram> {
         return const Color(0xFFE56164);
       case CyclePhase.ovulation:
         return Colors.amber;
-      case CyclePhase.fertility:
+      case CyclePhase.fertile:
         return const Color(0xFFDA93E2);
       case CyclePhase.pms:
         return const Color(0xFF6165E5);
-      case CyclePhase.normal:
-      case null:
+      case CyclePhase.none:
         return const Color(0xFF624266);
     }
   }
@@ -167,11 +320,13 @@ class _CycleDiagramState extends State<CycleDiagram> {
             CircularPercentIndicator(
               radius: 150,
               lineWidth: 20,
-              percent: cycle.periodLength / cycle.cycleLength,
+              percent:
+                  max(1, cycle.menstruationEnd - cycle.menstruationStart) /
+                  cycle.cycleLength,
               backgroundColor: Colors.transparent,
               progressColor: Color(0xFFE56164),
               circularStrokeCap: CircularStrokeCap.round,
-              startAngle: 0,
+              startAngle: 360 / cycle.cycleLength,
             ),
             CircularPercentIndicator(
               radius: 150,
@@ -181,18 +336,20 @@ class _CycleDiagramState extends State<CycleDiagram> {
               backgroundColor: Colors.transparent,
               progressColor: Color(0xFFDA93E2),
               circularStrokeCap: CircularStrokeCap.round,
-              startAngle: 360 / cycle.cycleLength * cycle.fertileStart,
+              startAngle: 360 / cycle.cycleLength * (cycle.fertileStart),
             ),
 
             CircularPercentIndicator(
               radius: 150,
               lineWidth: 20,
-              percent: 3 / cycle.cycleLength,
+              percent:
+                  (cycle.pmsEndDayCalculated - cycle.pmsStartDayCalculated) /
+                  cycle.cycleLength,
               backgroundColor: Colors.transparent,
               progressColor: Color(0xFF6165E5),
               circularStrokeCap: CircularStrokeCap.round,
               startAngle:
-                  360 / cycle.cycleLength * (cycle.pmsStartDayCalculated - 1),
+                  360 / cycle.cycleLength * (cycle.pmsStartDayCalculated),
             ),
 
             Column(
@@ -308,7 +465,7 @@ class _CycleDiagramState extends State<CycleDiagram> {
   }
 
   Widget _buildOvulationMarker() {
-    final percent = (cycle.ovulationDay - 1) / cycle.cycleLength;
+    final percent = cycle.ovulationDay / cycle.cycleLength;
 
     final radius = 140.0;
     final angle = (percent * 360 - 90) * pi / 180;

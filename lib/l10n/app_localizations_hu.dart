@@ -52,6 +52,31 @@ class AppLocalizationsHu extends AppLocalizations {
   String get registerPage_lastPeriodStart => 'Utolsó menstruáció kezdete';
 
   @override
+  String get registerPage_selectCycleLengthTitle => 'Hány napos a ciklusod?';
+
+  @override
+  String get registerPage_selectCycleLengthDescription =>
+      'A ciklus hossza a menstruáció első napjától a következő menstruáció előtti napig tart';
+
+  @override
+  String get registerPage_cycleLengthInputLabel => 'Ciklus hossza';
+
+  @override
+  String get registerPage_cycleLengthInputHint => 'pl. 28';
+
+  @override
+  String get registerPage_cycleLengthDays => 'nap';
+
+  @override
+  String get registerPage_cycleLengthUnknown => 'Nem tudom';
+
+  @override
+  String get registerPage_cycleLength => 'Ciklus hossza';
+
+  @override
+  String get registerPage_periodLength => 'Menstruáció hossza';
+
+  @override
   String get registerPage_acceptTerms => 'Elfogadom a feltételeket';
 
   @override
