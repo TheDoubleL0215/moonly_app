@@ -5,6 +5,7 @@ import 'package:moonly/screens/mainpages_holder.dart';
 import 'package:moonly/screens/registerpage_steps/StepCycleLength.dart';
 import 'package:moonly/screens/registerpage_steps/StepDate.dart';
 import 'package:moonly/screens/registerpage_steps/StepLegal.dart';
+import 'package:moonly/screens/registerpage_steps/StepPeriodLength.dart';
 import 'package:moonly/screens/registerpage_steps/SteplastPeriod.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   DateTime? dateOfBirth;
   DateTime? lastPeriodStart;
   int? cycleLength;
-
+  int? periodLength;
   bool acceptedLegal = false;
   @override
   void initState() {
@@ -30,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void nextStep() {
-    if (_currentStep < 3) {
+    if (_currentStep < 4) {
       setState(() => _currentStep++);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 350),
@@ -57,6 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'yearOfBirth': dateOfBirth?.year,
       'acceptedLegal': acceptedLegal,
       'averageCycleLength': cycleLength,
+      'averagePeriodLength': periodLength,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -122,7 +124,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             },
             onBack: prevStep,
           ),
+          StepPeriodLength(
+            initialValue: periodLength,
+            onNext: (val) {
+              periodLength = val;
+              nextStep();
+            },
+            onBack: prevStep,
+          ),
           StepLegalAgreement(
+            periodLength: periodLength,
             cycleLength: cycleLength,
             initialValue: acceptedLegal,
             dateOfBirth: dateOfBirth,

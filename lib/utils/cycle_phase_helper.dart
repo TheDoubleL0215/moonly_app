@@ -1,3 +1,5 @@
+import 'package:moonly/utils/cycle_config.dart';
+
 enum CyclePhase { menstruation, ovulation, fertile, pms, none }
 
 class CyclePhaseHelper {
@@ -5,8 +7,9 @@ class CyclePhaseHelper {
 
   /// Normalized bleeding days (cached for performance).
   late final List<DateTime> _normalizedBleedingDays;
+  final CycleConfig cycleConfig;
 
-  CyclePhaseHelper({required this.bleedingDays}) {
+  CyclePhaseHelper({required this.bleedingDays, required this.cycleConfig}) {
     _normalizedBleedingDays = bleedingDays.map(_normalize).toList();
   }
 
@@ -199,17 +202,17 @@ class CyclePhaseHelper {
 
   int _getPeriodLength() {
     if (_normalizedBleedingDays.isEmpty) {
-      return _defaultPeriodLength;
+      return cycleConfig.averagePeriodLength;
     }
 
     final periodStarts = _extractPeriodStarts();
     if (periodStarts.isEmpty) {
-      return _defaultPeriodLength;
+      return cycleConfig.averagePeriodLength;
     }
 
     // Only calculate period length if there are at least 2 cycle starts
     if (periodStarts.length < 2) {
-      return _defaultPeriodLength;
+      return cycleConfig.averagePeriodLength;
     }
 
     final List<int> periodLengths = [];
@@ -257,7 +260,7 @@ class CyclePhaseHelper {
 
     // Need at least 2 period starts to calculate cycle length
     if (periodStarts.length < 2) {
-      return 30; // Default cycle length
+      return cycleConfig.averageCycleLength; // Default cycle length
     }
 
     final List<int> cycleLengths = [];
@@ -453,5 +456,9 @@ class CyclePhaseHelper {
   /// For debugging purposes only.
   List<DateTime> getPeriodStarts() {
     return _extractPeriodStarts();
+  }
+
+  int getCycleLength() {
+    return _getCycleLength();
   }
 }

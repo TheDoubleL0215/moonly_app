@@ -74,7 +74,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPage_cycleLength => 'Cycle length';
 
   @override
+  String get registerPage_cycleLengthDefaultInfo =>
+      'By default, your cycle length will be set to 30 days.';
+
+  @override
   String get registerPage_periodLength => 'Period length';
+
+  @override
+  String get registerPage_selectPeriodLengthTitle => 'How long is your period?';
+
+  @override
+  String get registerPage_selectPeriodLengthDescription =>
+      'Period length is from the first day of bleeding to the last day of bleeding';
+
+  @override
+  String get registerPage_periodLengthDays => 'days';
+
+  @override
+  String get registerPage_periodLengthUnknown => 'I don\'t know';
+
+  @override
+  String get registerPage_periodLengthDefaultInfo =>
+      'By default, your period length will be set to 5 days.';
 
   @override
   String get registerPage_acceptTerms => 'I accept the terms';

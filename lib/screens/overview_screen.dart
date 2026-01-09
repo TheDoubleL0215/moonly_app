@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moonly/l10n/app_localizations.dart';
 import 'package:moonly/ui/CycleDiagram.dart';
+import 'package:moonly/utils/cycle_config.dart';
 import 'package:moonly/utils/cycle_phase_helper.dart';
 
 class OverviewScreen extends StatelessWidget {
@@ -34,10 +35,13 @@ class OverviewScreen extends StatelessWidget {
 
           // Get averageCycleLength from user document
           int averageCycleLength = 28; // Default fallback
+          int averagePeriodLength = 5; // Default fallback
           if (userSnapshot.hasData) {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
             averageCycleLength =
                 (userData?['averageCycleLength'] as int?) ?? 28;
+            averagePeriodLength =
+                (userData?['averagePeriodLength'] as int?) ?? 5;
           }
 
           return StreamBuilder<QuerySnapshot>(
@@ -66,40 +70,30 @@ class OverviewScreen extends StatelessWidget {
 
               // Get cycle start date and period length from CyclePhaseHelper
               DateTime? currentPeriodStart;
-              int periodLength = 5; // Default fallback
               CyclePhaseHelper? phaseHelper;
+              int currentCycleLength = 30; // Default fallback
+
+              final cycleConfig = CycleConfig(
+                averageCycleLength: averageCycleLength,
+                averagePeriodLength: averagePeriodLength,
+              );
               if (bleedingDays.isNotEmpty) {
-                phaseHelper = CyclePhaseHelper(bleedingDays: bleedingDays);
-                final periodStarts = phaseHelper.getPeriodStarts();
-                if (periodStarts.isNotEmpty) {
-                  currentPeriodStart = periodStarts.last;
-                  // Calculate period length using the helper's internal method
-                  // We need to access it through a public method or calculate it ourselves
-                  // For now, we'll use a simple calculation based on bleeding days
-                  final sortedBleedingDays = List<DateTime>.from(bleedingDays)
-                    ..sort();
-                  int calculatedLength = 1; // Start with period start day
-                  DateTime currentDay = currentPeriodStart;
+                phaseHelper = CyclePhaseHelper(
+                  bleedingDays: bleedingDays,
+                  cycleConfig: cycleConfig,
+                );
+                currentCycleLength = phaseHelper.getCycleLength();
+                currentPeriodStart = phaseHelper.getPeriodStarts().last;
+              }
 
-                  while (true) {
-                    final nextDay = currentDay.add(const Duration(days: 1));
-                    final dayAfterNext = currentDay.add(
-                      const Duration(days: 2),
-                    );
-
-                    if (sortedBleedingDays.contains(nextDay)) {
-                      calculatedLength++;
-                      currentDay = nextDay;
-                    } else if (sortedBleedingDays.contains(dayAfterNext)) {
-                      calculatedLength += 2;
-                      currentDay = dayAfterNext;
-                    } else {
-                      break;
-                    }
-                  }
-
-                  periodLength = calculatedLength.clamp(1, 10);
-                }
+              // Collect phase information by looping through the cycle
+              Map<String, dynamic>? phaseInfo;
+              if (phaseHelper != null && currentPeriodStart != null) {
+                phaseInfo = _collectPhaseInfo(
+                  phaseHelper,
+                  currentPeriodStart,
+                  currentCycleLength,
+                );
               }
 
               if (bleedingDays.isEmpty && currentPeriodStart == null) {
@@ -128,11 +122,10 @@ class OverviewScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(32.0),
                         child: CycleDiagram(
-                          periodLength: periodLength,
+                          phaseInfo: phaseInfo,
                           bleedingDays: bleedingDays,
                           currentPeriodStart: currentPeriodStart,
-                          averageCycleLength: averageCycleLength,
-                          phaseHelper: phaseHelper,
+                          currentCycleLength: currentCycleLength,
                         ),
                       ),
                     ],
@@ -144,5 +137,60 @@ class OverviewScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  /// Collects phase information by looping through the cycle from currentPeriodStart.
+  /// Returns a map containing start days and durations for period, ovulation, and PMS.
+  static Map<String, dynamic> _collectPhaseInfo(
+    CyclePhaseHelper phaseHelper,
+    DateTime currentPeriodStart,
+    int cycleLength,
+  ) {
+    int? periodStartDay;
+    int periodDuration = 0;
+    int? ovulationStartDay;
+    int ovulationDuration = 0;
+    int? pmsStartDay;
+    int pmsDuration = 0;
+
+    // Loop through the cycle, starting from currentPeriodStart
+    for (int day = 0; day < cycleLength; day++) {
+      final currentDate = currentPeriodStart.add(Duration(days: day));
+      final currentPhase = phaseHelper.getPhase(currentDate);
+      final dayInCycle = day + 1; // 1-based day in cycle
+
+      // Track period
+      if (currentPhase == CyclePhase.menstruation) {
+        periodStartDay ??= dayInCycle;
+        periodDuration++;
+      }
+
+      // Track ovulation (single day)
+      if (currentPhase == CyclePhase.ovulation) {
+        ovulationStartDay ??= dayInCycle;
+        ovulationDuration = 1;
+      }
+
+      // Track PMS
+      if (currentPhase == CyclePhase.pms) {
+        pmsStartDay ??= dayInCycle;
+        pmsDuration++;
+      }
+    }
+
+    return {
+      'period': {
+        'startDay': periodStartDay != null ? periodStartDay - 1 : null,
+        'duration': periodDuration,
+      },
+      'ovulation': {
+        'startDay': ovulationStartDay != null ? ovulationStartDay - 1 : null,
+        'duration': ovulationDuration,
+      },
+      'pms': {
+        'startDay': pmsStartDay != null ? pmsStartDay - 1 : null,
+        'duration': pmsDuration,
+      },
+    };
   }
 }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:moonly/l10n/app_localizations.dart';
 
-class StepCycleLength extends StatefulWidget {
+class StepPeriodLength extends StatefulWidget {
   final int? initialValue;
   final void Function(int? value) onNext;
   final VoidCallback onBack;
 
-  const StepCycleLength({
+  const StepPeriodLength({
     super.key,
     this.initialValue,
     required this.onNext,
@@ -15,26 +15,26 @@ class StepCycleLength extends StatefulWidget {
   });
 
   @override
-  State<StepCycleLength> createState() => _StepCycleLengthState();
+  State<StepPeriodLength> createState() => _StepPeriodLengthState();
 }
 
-class _StepCycleLengthState extends State<StepCycleLength> {
+class _StepPeriodLengthState extends State<StepPeriodLength> {
   bool _isUnknownSelected = false;
-  int _cycleLength = 28;
+  int _periodLength = 5;
 
   @override
   void initState() {
     super.initState();
     if (widget.initialValue != null) {
-      _cycleLength = widget.initialValue!;
+      _periodLength = widget.initialValue!;
     }
   }
 
   void _increment() {
     setState(() {
       _isUnknownSelected = false;
-      if (_cycleLength < 40) {
-        _cycleLength++;
+      if (_periodLength < 10) {
+        _periodLength++;
       }
     });
   }
@@ -42,8 +42,8 @@ class _StepCycleLengthState extends State<StepCycleLength> {
   void _decrement() {
     setState(() {
       _isUnknownSelected = false;
-      if (_cycleLength > 20) {
-        _cycleLength--;
+      if (_periodLength > 1) {
+        _periodLength--;
       }
     });
   }
@@ -51,7 +51,7 @@ class _StepCycleLengthState extends State<StepCycleLength> {
   void _handleUnknownSelected() {
     setState(() {
       _isUnknownSelected = true;
-      _cycleLength = 30;
+      _periodLength = 5;
     });
   }
 
@@ -71,21 +71,21 @@ class _StepCycleLengthState extends State<StepCycleLength> {
                 CircleAvatar(
                   radius: 40,
                   child: Icon(
-                    LucideIcons.calendar,
+                    LucideIcons.droplets,
                     size: 40,
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  localizations.registerPage_selectCycleLengthTitle,
+                  localizations.registerPage_selectPeriodLengthTitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  localizations.registerPage_selectCycleLengthDescription,
+                  localizations.registerPage_selectPeriodLengthDescription,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -99,8 +99,6 @@ class _StepCycleLengthState extends State<StepCycleLength> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
-                // Info text when "I don't know" is selected
-
                 // Counter with increment/decrement buttons
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 24),
@@ -133,7 +131,7 @@ class _StepCycleLengthState extends State<StepCycleLength> {
                         child: Column(
                           children: [
                             Text(
-                              '$_cycleLength',
+                              '$_periodLength',
                               style: Theme.of(context).textTheme.displayMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -141,7 +139,7 @@ class _StepCycleLengthState extends State<StepCycleLength> {
                                   ),
                             ),
                             Text(
-                              localizations.registerPage_cycleLengthDays,
+                              localizations.registerPage_periodLengthDays,
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(color: Colors.grey),
                             ),
@@ -186,7 +184,7 @@ class _StepCycleLengthState extends State<StepCycleLength> {
                         : null,
                   ),
                   child: Text(
-                    localizations.registerPage_cycleLengthUnknown,
+                    localizations.registerPage_periodLengthUnknown,
                     style: TextStyle(
                       fontSize: 16,
                       color: _isUnknownSelected
@@ -203,9 +201,9 @@ class _StepCycleLengthState extends State<StepCycleLength> {
           ),
           if (_isUnknownSelected)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.all(16),
               child: Text(
-                localizations.registerPage_cycleLengthDefaultInfo,
+                localizations.registerPage_periodLengthDefaultInfo,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -238,7 +236,7 @@ class _StepCycleLengthState extends State<StepCycleLength> {
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       backgroundColor: Theme.of(context).colorScheme.primary,
                     ),
-                    onPressed: () => widget.onNext(_cycleLength),
+                    onPressed: () => widget.onNext(_periodLength),
                     child: Text(
                       localizations.registerPage_continueButtonText,
                       style: const TextStyle(

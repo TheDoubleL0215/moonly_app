@@ -8,15 +8,17 @@ class StepLegalAgreement extends StatefulWidget {
   final DateTime? dateOfBirth;
   final DateTime? lastPeriodStart;
   final int? cycleLength;
+  final int? periodLength;
   final void Function(bool value) onFinish;
   final VoidCallback onBack;
 
   const StepLegalAgreement({
     super.key,
+    required this.periodLength,
+    required this.cycleLength,
     required this.initialValue,
-    this.dateOfBirth,
-    this.lastPeriodStart,
-    this.cycleLength,
+    required this.dateOfBirth,
+    required this.lastPeriodStart,
     required this.onFinish,
     required this.onBack,
   });
@@ -115,6 +117,18 @@ class _StepLegalAgreementState extends State<StepLegalAgreement> {
                       ),
                       subtitle: Text(
                         '${widget.cycleLength!} ${localizations.registerPage_cycleLengthDays}',
+                      ),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(LucideIcons.droplets),
+                      title: Text(
+                        localizations.registerPage_periodLength,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${widget.periodLength!} ${localizations.registerPage_periodLengthDays}',
                       ),
                     ),
                   ),

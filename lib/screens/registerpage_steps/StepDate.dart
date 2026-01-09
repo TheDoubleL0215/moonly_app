@@ -83,32 +83,35 @@ class _StepDateOfBirthState extends State<StepDateOfBirth> {
             ),
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            height: 150,
-            child: Center(
-              child: CupertinoPicker(
-                scrollController: scrollController,
-                itemExtent: 35,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedYear = years[index];
-                    selectedDate = DateTime(selectedYear, 1, 1);
-                  });
-                },
-                children: years.map((year) {
-                  return Center(
-                    child: Text(
-                      year.toString(),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  );
-                }).toList(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              height: 150,
+              child: Center(
+                child: CupertinoPicker(
+                  scrollController: scrollController,
+                  itemExtent: 35,
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      selectedYear = years[index];
+                      selectedDate = DateTime(selectedYear, 1, 1);
+                    });
+                  },
+                  children: years.map((year) {
+                    return Center(
+                      child: Text(
+                        year.toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
           const Spacer(),
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: SizedBox(
               width: double.infinity,
               height: 60,

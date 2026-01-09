@@ -74,7 +74,29 @@ class AppLocalizationsHu extends AppLocalizations {
   String get registerPage_cycleLength => 'Ciklus hossza';
 
   @override
+  String get registerPage_cycleLengthDefaultInfo =>
+      'Alapértelmezés szerint a ciklushosszod 30 napra lesz beállítva.';
+
+  @override
   String get registerPage_periodLength => 'Menstruáció hossza';
+
+  @override
+  String get registerPage_selectPeriodLengthTitle =>
+      'Hány napig tart a menstruációd?';
+
+  @override
+  String get registerPage_selectPeriodLengthDescription =>
+      'A menstruáció hossza az első vérzéses naptól az utolsó vérzéses napig tart';
+
+  @override
+  String get registerPage_periodLengthDays => 'nap';
+
+  @override
+  String get registerPage_periodLengthUnknown => 'Nem tudom';
+
+  @override
+  String get registerPage_periodLengthDefaultInfo =>
+      'Alapértelmezés szerint a menstruáció hosszod 5 napra lesz beállítva.';
 
   @override
   String get registerPage_acceptTerms => 'Elfogadom a feltételeket';

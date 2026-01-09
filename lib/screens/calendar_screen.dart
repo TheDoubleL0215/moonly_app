@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moonly/l10n/app_localizations.dart';
+import 'package:moonly/utils/cycle_config.dart';
 import 'package:moonly/utils/cycle_phase_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -153,66 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc!.appbar_calendarText),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.bug_report),
-            tooltip: 'Debug: Print Period Starts',
-            onPressed: () {
-              // Get bleeding days and averageCycleLength for debug
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .get()
-                  .then((userDoc) {
-                    final userData = userDoc.data();
-                    final averageCycleLength =
-                        ((userData
-                                as Map<String, dynamic>?)?['averageCycleLength']
-                            as int?) ??
-                        28;
-
-                    FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user.uid)
-                        .collection('bleedings')
-                        .get()
-                        .then((bleedingSnapshot) {
-                          final bleedingDays = <DateTime>[];
-                          for (final doc in bleedingSnapshot.docs) {
-                            final data = doc.data();
-                            final dateTimestamp = data['date'] as Timestamp?;
-                            if (dateTimestamp != null) {
-                              final date = dateTimestamp.toDate();
-                              bleedingDays.add(
-                                DateTime(date.year, date.month, date.day),
-                              );
-                            }
-                          }
-
-                          final helper = CyclePhaseHelper(
-                            bleedingDays: bleedingDays,
-                          );
-
-                          final periodStarts = helper.getPeriodStarts();
-                          final dateFormat = DateFormat('yyyy-MM-dd');
-
-                          print('=== DEBUG: Period Starts ===');
-                          print('Bleeding days count: ${bleedingDays.length}');
-                          print('Average cycle length: $averageCycleLength');
-                          print('Period starts count: ${periodStarts.length}');
-                          print('Period starts:');
-                          for (final start in periodStarts) {
-                            print('  - ${dateFormat.format(start)}');
-                          }
-                          print('===========================');
-                        });
-                  });
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(loc!.appbar_calendarText)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: StreamBuilder<DocumentSnapshot>(
@@ -226,9 +168,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
             }
 
             // Get averageCycleLength from user document
-            final userData = userSnapshot.data?.data() as Map<String, dynamic>?;
-            final averageCycleLength =
-                (userData?['averageCycleLength'] as int?) ?? 28;
+            int averageCycleLength = 28; // Default fallback
+            int averagePeriodLength = 5; // Default fallback
+            if (userSnapshot.hasData) {
+              final userData =
+                  userSnapshot.data!.data() as Map<String, dynamic>?;
+              averageCycleLength =
+                  (userData?['averageCycleLength'] as int?) ?? 28;
+              averagePeriodLength =
+                  (userData?['averagePeriodLength'] as int?) ?? 5;
+            }
 
             return StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -260,6 +209,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 // Create CyclePhaseHelper instance
                 final cyclePhaseHelper = CyclePhaseHelper(
                   bleedingDays: bleedingDays,
+                  cycleConfig: CycleConfig(
+                    averageCycleLength: averageCycleLength,
+                    averagePeriodLength: averagePeriodLength,
+                  ),
                 );
 
                 return TableCalendar(

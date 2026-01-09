@@ -62,7 +62,7 @@ class _StepLastPeriodState extends State<StepLastPeriod> {
                 CircleAvatar(
                   radius: 40,
                   child: Icon(
-                    LucideIcons.droplets,
+                    LucideIcons.calendarDays,
                     size: 40,
                     color: Colors.white,
                   ),

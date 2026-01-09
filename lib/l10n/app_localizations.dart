@@ -218,11 +218,47 @@ abstract class AppLocalizations {
   /// **'Ciklus hossza'**
   String get registerPage_cycleLength;
 
+  /// No description provided for @registerPage_cycleLengthDefaultInfo.
+  ///
+  /// In hu, this message translates to:
+  /// **'Alapértelmezés szerint a ciklushosszod 30 napra lesz beállítva.'**
+  String get registerPage_cycleLengthDefaultInfo;
+
   /// No description provided for @registerPage_periodLength.
   ///
   /// In hu, this message translates to:
   /// **'Menstruáció hossza'**
   String get registerPage_periodLength;
+
+  /// No description provided for @registerPage_selectPeriodLengthTitle.
+  ///
+  /// In hu, this message translates to:
+  /// **'Hány napig tart a menstruációd?'**
+  String get registerPage_selectPeriodLengthTitle;
+
+  /// No description provided for @registerPage_selectPeriodLengthDescription.
+  ///
+  /// In hu, this message translates to:
+  /// **'A menstruáció hossza az első vérzéses naptól az utolsó vérzéses napig tart'**
+  String get registerPage_selectPeriodLengthDescription;
+
+  /// No description provided for @registerPage_periodLengthDays.
+  ///
+  /// In hu, this message translates to:
+  /// **'nap'**
+  String get registerPage_periodLengthDays;
+
+  /// No description provided for @registerPage_periodLengthUnknown.
+  ///
+  /// In hu, this message translates to:
+  /// **'Nem tudom'**
+  String get registerPage_periodLengthUnknown;
+
+  /// No description provided for @registerPage_periodLengthDefaultInfo.
+  ///
+  /// In hu, this message translates to:
+  /// **'Alapértelmezés szerint a menstruáció hosszod 5 napra lesz beállítva.'**
+  String get registerPage_periodLengthDefaultInfo;
 
   /// No description provided for @registerPage_acceptTerms.
   ///
